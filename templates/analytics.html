@@ -27,33 +27,13 @@
     <div class="container" min-width= "720px" width="80%">
         <div class="dash-sub-title">
         <div class="container" min-width= "1024px" width="100%">
+          <br>
           <a href="{{url_for('index', filename=filename)}}"><button class="btn home-btn"><i class="fa fa-home"></i> Home</button></a>
         </div>
-        <br>
-        <h1>ANALYTICS</h1>
-        <br>
         <div id="videos" class="container" min-width= "1024px" width="100%">
-            <div class="row mt-5 justify-content-center">
-            {% if videos %}
-            {% for video in videos %}
-                <div class="card mt-4" style="width: 18rem; margin: 10px; height: 25rem;">
-                    {% if not '.mp4' in video %}
-                        <img class="card-img-top" src="{{videos[video]}}" alt="Card image cap">
-                    {% else %}
-                        <img class="card-img-top" src="{{url_for('static', filename='video.png')}}" alt="Card image cap">
-                    {% endif %}
-                    <div class="card-body d-flex flex-column">
-                        <p class="card-text media-name">{{ video }}</p>
-                        {% if not '.mp4' in video %}
-                            <a class="btn-view align-self-end mt-auto btn-block" href="{{url_for('view_video', filename=video)}}"><button class="btn-block btn data-btn"><i class="fa fa-photo"></i> View</button></a>
-                        {% else %}
-                            <a class="btn-view align-self-end mt-auto btn-block" href="{{url_for('view_video', filename=video)}}"><button class="btn-block btn data-btn"><i class="fa fa-film"></i> View</button></a>
-                        {% endif %}
-                    </div>
-                </div>
-            {% endfor %}
-            {% endif %}
-            </div>
+          <div class="row mt-5 justify-content-center">
+            <iframe src="dash/" width=700 height=600>
+          </div>
         </div>
     </div>
 </body>

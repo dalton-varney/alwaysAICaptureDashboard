@@ -1,7 +1,7 @@
 import plotly.express as px
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc
+from dash import html
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
@@ -108,7 +108,7 @@ def videos():
 
 @app.route('/analytics', methods=['GET'])
 def analytics():
-    return redirect('/dash/')
+    return render_template('analytics.html')
 
 @app.route('/view_video/<filename>', methods=['GET'])
 def view_video(filename):
@@ -134,52 +134,34 @@ dash_app = dash.Dash(
     external_stylesheets=[dbc.themes.LUX]
 )
 
-df = pd.DataFrame({
-"Fruit": ["Apples", "Oranges", "Bananas", "Apples", "Oranges", "Bananas"],
-"Amount": [4, 1, 2, 2, 4, 5],
-"City": ["SF", "SF", "SF", "Montreal", "Montreal", "Montreal"]
-})
-all_options = {
-    'America': ['New York City', 'San Francisco', 'Cincinnati'],
-    'Canada': [u'Montréal', 'Toronto', 'Ottawa']
-}
-fig = px.bar(df, x="Fruit", y="Amount", color="City", barmode="group")
-# Dash Layout
-dash_app.layout = html.Div(children=[
-    html.H1('Hello Dash'),
+df = pd.read_csv('static/data.csv')
 
-    html.Div('''
-        Dash: A web application framework for Python.
-    '''),
-    dcc.RadioItems(
-        id='countries-radio',
-        options=[{'label': k, 'value': k} for k in all_options.keys()],
-        value='America'
-    ),
-    dcc.RadioItems(id='cities-radio'),
-    dcc.Graph(
-        id='example-graph',
-        figure=fig
-    ),
-    # automatically update periodically
-    dcc.Interval(
-        id='interval-component',
-        interval=1*5000, # in milliseconds
-        n_intervals=0
+dash_app.layout = html.Div([
+    dcc.Graph(id='graph-with-slider'),
+    dcc.Slider(
+        df['year'].min(),
+        df['year'].max(),
+        step=None,
+        value=df['year'].min(),
+        marks={str(year): str(year) for year in df['year'].unique()},
+        id='year-slider'
     )
 ])
 
-# Dash Callbacks
+
 @dash_app.callback(
-    output=[Output("example-graph", "figure"), Output("cities-radio", "options")],
-    inputs=[Input('interval-component', 'n_intervals')])
-def render_log_table(n_intervals):
-    df = pd.DataFrame({
-        "Fruit": ["Apples", "Oranges", "Bananas", "Apples", "Oranges", "Bananas"],
-        "Amount": [4, 1, 2, 2, 4, 5],
-        "City": ["SF", "SF", "SF", "Montreal", "Montreal", "Montreal"]
-        })
-    return df.to_dict('records'), [{"name": i, "id": i} for i in df.columns]
+    Output('graph-with-slider', 'figure'),
+    Input('year-slider', 'value'))
+def update_figure(selected_year):
+    filtered_df = df[df.year == selected_year]
+
+    fig = px.scatter(filtered_df, x="gdpPercap", y="lifeExp",
+                     size="pop", color="continent", hover_name="country",
+                     log_x=True, size_max=55)
+
+    fig.update_layout(transition_duration=500)
+
+    return fig
 
 
 class CVClient(eventlet_threading.Thread):
