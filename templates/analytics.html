@@ -28,13 +28,11 @@
         <div class="dash-sub-title">
         <div class="container" min-width= "1024px" width="100%">
           <br>
-          <a href="{{url_for('index', filename=filename)}}"><button class="btn home-btn"><i class="fa fa-home"></i> Home</button></a>
+          <a href="{{url_for('index', filename=filename)}}"><button class="btn hom-btn"><i class="fa fa-home"></i> Home</button></a>
         </div>
-        <div id="videos" class="container" min-width= "1024px" width="100%">
           <div class="row mt-5 justify-content-center">
-            <iframe src="dash/" width=700 height=600>
+            <iframe src="dash/" width=100% height=800>
           </div>
-        </div>
     </div>
 </body>
 {% endblock %}

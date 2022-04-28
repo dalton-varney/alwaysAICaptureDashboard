@@ -159,7 +159,7 @@ def update_figure(selected_year):
                      size="pop", color="continent", hover_name="country",
                      log_x=True, size_max=55)
 
-    fig.update_layout(transition_duration=500)
+    fig.update_layout(transition_duration=500, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
 
     return fig
 
